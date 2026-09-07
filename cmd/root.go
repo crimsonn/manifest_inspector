@@ -1,6 +1,3 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -11,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "manifest-inspector",
 	Short: "A brief description of your application",
@@ -25,7 +21,6 @@ to quickly create a Cobra application.`,
 		url, _ := cmd.Flags().GetString("url")
 		if url != "" {
 			isHLS := strings.Contains(url, "m3u8")
-			// isMPD := strings.Contains(url, "mpd")
 			if isHLS {
 				parser := hls.NewParser()
 				err := parser.Parse(url)

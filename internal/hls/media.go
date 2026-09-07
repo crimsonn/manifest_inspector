@@ -65,24 +65,5 @@ func parseMedia(line string) (*MasterMedia, error) {
 		}
 	}
 
-	m.Display()
 	return m, nil
-}
-
-func (m *MasterMedia) Display() {
-	fmt.Printf("MediaType=%s\n", m.MediaType)
-	fmt.Printf("Uri=%s\n", m.Uri)
-	fmt.Printf("GroupID=%s\n", m.GroupID)
-	fmt.Printf("Language=%s\n", m.Language)
-	fmt.Printf("AssocLanguage=%s\n", m.AssocLanguage)
-	fmt.Printf("Name=%s\n", m.Name)
-	fmt.Printf("StableRenditionID=%s\n", m.StableRenditionID)
-	fmt.Printf("Default=%s\n", m.Default)
-	fmt.Printf("AutoSelect=%s\n", m.AutoSelect)
-	fmt.Printf("Forced=%s\n", m.Forced)
-	fmt.Printf("InStreamID=%s\n", m.InStreamID)
-	fmt.Printf("BitDepth=%s\n", m.BitDepth)
-	fmt.Printf("SampleRate=%f\n", m.SampleRate)
-	fmt.Printf("Characteristics=%s\n", m.Characteristics)
-	fmt.Printf("Channels=%s\n", m.Channels)
 }

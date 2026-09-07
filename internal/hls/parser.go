@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -39,7 +40,6 @@ func (p *parser) Parse(url string) error {
 		return fmt.Errorf("%w: %v", ErrUnableToParse, err)
 	}
 	if strings.Contains(string(buf), "#EXT-X-STREAM-INF") {
-		// Master Playlist
 		err := p.parseMasterPlaylist(buf)
 		if err != nil {
 			return err
@@ -53,8 +53,22 @@ func (p *parser) parseMasterPlaylist(buf []byte) error {
 	if scanner.Err() != nil {
 		return fmt.Errorf("%w: %v", ErrUnableToParse, scanner.Err())
 	}
-	masterPlaylist := NewMasterPlaylist()
-	masterPlaylist.scan(scanner)
+	master := NewMasterPlaylist()
+	err := master.scan(scanner)
+	if err != nil {
+		log.Fatalf("Parse error: %v", err)
+	}
+
+	report := master.Inspect()
+	if !report.IsValid {
+		fmt.Println("Manifest failed validation!")
+		for _, issue := range report.Issues {
+			fmt.Printf("[%s] %s: %s\n", issue.Severity, issue.Code, issue.Message)
+		}
+	} else {
+		fmt.Printf("Valid Master Playlist with %d variants (Bitrate range: %d bps - %d bps)\n",
+			report.Stats.VariantCount, report.Stats.MinBandwidth, report.Stats.MaxBandwidth)
+	}
 
 	return nil
 }
