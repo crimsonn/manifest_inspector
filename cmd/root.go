@@ -10,23 +10,26 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:   "manifest-inspector",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Inspect HLS streaming manifests (testing tool, work in progress)",
+	Long: `manifest-inspector is a CLI testing tool for streaming manifests.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+It fetches an HLS master playlist and reports validation issues
+(variants, codecs, audio/subtitle groups, and related attributes).
+
+DASH/MPD is not supported yet. This project is early and incomplete;
+checks and output will change.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		url, _ := cmd.Flags().GetString("url")
 		if url != "" {
-			isHLS := strings.Contains(url, "m3u8")
-			if isHLS {
+			lowerURL := strings.ToLower(url)
+			if strings.Contains(lowerURL, "m3u8") {
 				parser := hls.NewParser()
 				err := parser.Parse(url)
 				if err != nil {
 					return err
 				}
+			} else if strings.Contains(lowerURL, "mpd") {
+				cmd.PrintErrln("warning: DASH/MPD manifests cannot be parsed yet")
 			}
 		}
 		return nil
@@ -41,6 +44,5 @@ func Execute() {
 }
 
 func init() {
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringP("url", "u", "", "Use the HLS or MPD manifest url")
 }
